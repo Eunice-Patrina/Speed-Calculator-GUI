@@ -5,6 +5,8 @@ import sys
 class SpeedCalculator(QWidget):
     def __init__(self):
         super().__init__()
+
+        self.setWindowTitle("Average Speed Calculator")
         grid = QGridLayout()
 
         distance_label = QLabel("Distance")
@@ -13,9 +15,8 @@ class SpeedCalculator(QWidget):
         hour_label = QLabel("Time(hours)")
         self.hour_line_edit = QLineEdit()
 
-        metric_select = QComboBox()
-        metric_select.addItems(["Metric(km)", "imperial(miles)"])
-        self.selected_unit = metric_select.currentText()
+        self.metric_select = QComboBox()
+        self.metric_select.addItems(["Metric(km)", "imperial(miles)"])
 
         calculate_button = QPushButton("Calculate")
         calculate_button.clicked.connect(self.calculate)
@@ -24,7 +25,7 @@ class SpeedCalculator(QWidget):
         grid.addWidget(distance_label, 0, 0)
         grid.addWidget(self.distance_line_edit, 0, 1)
 
-        grid.addWidget(metric_select, 0, 2)
+        grid.addWidget(self.metric_select, 0, 2)
 
         grid.addWidget(hour_label, 1, 0)
         grid.addWidget(self.hour_line_edit, 1, 1)
@@ -37,7 +38,15 @@ class SpeedCalculator(QWidget):
 
     def calculate(self):
         speed = float(self.distance_line_edit.text() )/ float(self.hour_line_edit.text())
-        self.output_label.setText(f"Average Speed {speed} {self.selected_unit}")
+
+        if(self.metric_select.currentText() == "Metric(km)"):
+            speed = round(speed, 2)
+            unit = "km/h"
+        else:
+            speed = round(speed * 0.621371, 2)
+            unit = "mph"
+
+        self.output_label.setText(f"Average Speed {speed} {unit}")
 
 app = QApplication(sys.argv)
 speed_calculator = SpeedCalculator()
